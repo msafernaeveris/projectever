@@ -1,0 +1,18 @@
+version: '3.7'
+services:
+    mongodb:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: mongodb-customer
+        restart: always
+        environment:
+            MONGO_INITDB_USERNAME: admin
+            MONGO_INITDB_PASSWORD: admin
+            MONGO_INITDB_DATABASE: exampledb
+        ports:
+            - 12500:27017
+        volumes:
+            - ./mongo/:/etc/mongo
+volumes:
+    mongo: {}
