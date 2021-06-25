@@ -5,7 +5,7 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:9090/eureka/
+      defaultZone: http://localhost:8761/eureka/
 
 spring:
   aplication:
@@ -18,7 +18,31 @@ spring:
         locator:
           enabled: true
       routes:
+        - id: product-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/product/**
+        - id: transaction-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/transaction/**
+        - id: representative-service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/representative/**
         - id: customer-service
-          uri: lb://customer-service
+          uri: http://localhost:8084
           predicates:
             - Path=/customer/**
+        - id: movement-service
+          uri: http://localhost:8085
+          predicates:
+            - Path=/movement/**
+        - id: credit-service
+          uri: http://localhost:8086
+          predicates:
+            - Path=/credit/**
+        - id: creditcard-service
+          uri: http://localhost:8087
+          predicates:
+            - Path=/creditcard/**
