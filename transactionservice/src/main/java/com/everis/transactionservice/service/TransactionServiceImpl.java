@@ -24,10 +24,6 @@ import com.everis.transactionservice.repository.ITransactionRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-/**
- * @author Angel
- *
- */
 //@PropertySource("classpath:application.properties")
 @Service
 public class TransactionServiceImpl implements ITransactionService {
@@ -63,6 +59,12 @@ public class TransactionServiceImpl implements ITransactionService {
 	@Value("${msg.error.cuenta.cliente.ahorrovip.tarjeta}")
 	private String msgErrorCuentaVIPtarjeta;
 	
+	@Value("${msg.error.cuenta.cliente.pyme}")
+	private String msgErrorCuentaPyme;
+	
+	@Value("${msg.error.cuenta.cliente.pyme.tarjeta}")
+	private String msgErrorCuentaPymetarjeta;
+	
 	@Value("${id.product.cnta.ahorros}")
 	private String idProductCntaAhorros;
 	
@@ -82,7 +84,10 @@ public class TransactionServiceImpl implements ITransactionService {
 	private String idProductCreditTarjetaCredit;
 	
 	@Value("${id.product.credit.ahorrovip}")
-	private String idProductAhorroVIP;
+	private String idProductVIP;
+	
+	@Value("${id.product.credit.pyme}")
+	private String idProductPyme;
 	
 	@Value("${product.type.pasivo}")
 	private String productTypePasivo;
@@ -144,7 +149,7 @@ public class TransactionServiceImpl implements ITransactionService {
 		transaction.setProduct(product);
 		System.out.println(" type_customer=> " + customerTypePersonal);
 		
-		if(product.getIdProduct().equalsIgnoreCase(idProductAhorroVIP)) {
+		if(product.getIdProduct().equalsIgnoreCase(idProductVIP)) {
 			if(customerIdTypePersonal.equalsIgnoreCase(customer.getTypeCustomer()) || customerTypePersonal.equalsIgnoreCase(customer.getTypeCustomer())) {
 				long countCreditAccounts= this.countAccountCreditByCustomer(transaction);
 				if(countCreditAccounts>=1) {
@@ -155,6 +160,21 @@ public class TransactionServiceImpl implements ITransactionService {
 				}
 			}else {
 				throw new Exception(msgErrorCuentaVIP);
+			}
+			
+		}
+		
+		if(product.getIdProduct().equalsIgnoreCase(idProductPyme)) {
+			if(customerIdTypeEmpresarial.equalsIgnoreCase(customer.getTypeCustomer()) || customerIdTypeEmpresarial.equalsIgnoreCase(customer.getTypeCustomer())) {
+				long countCreditCardAccounts= this.countAccountCreditCardByCustomer(transaction);
+				if(countCreditCardAccounts>=1) {
+					transaction.setRepresentatives(this.getRepresentativesByNumDocRep(transaction.getRepresentatives()));
+					return transactionRep.insert(transaction);
+				}else {
+					throw new Exception(msgErrorCuentaPymetarjeta);
+				}
+			}else {
+				throw new Exception(msgErrorCuentaPyme);
 			}
 			
 		}
@@ -283,6 +303,18 @@ public class TransactionServiceImpl implements ITransactionService {
 				.andOperator(
 						Criteria.where("product.idProduct").is(transaction.getProduct().getIdProduct()),
 						Criteria.where("product.typeProduct").is(productTypeActivo)//Activo
+						)
+				);
+		
+		return mongoTemplate.find(query,Transaction.class).count().share().block();
+	}
+	
+	@Override
+	public long countAccountCreditCardByCustomer(Transaction transaction) {
+		Query query= new Query( 
+				Criteria.where("customer.numDoc").is(transaction.getCustomer().getNumDoc())
+				.andOperator(
+						Criteria.where("product.idProduct").is(idProductCreditTarjetaCredit)//Credit card
 						)
 				);
 		

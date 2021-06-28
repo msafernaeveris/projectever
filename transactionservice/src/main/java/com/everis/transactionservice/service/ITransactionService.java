@@ -18,4 +18,5 @@ public interface ITransactionService extends IMaintenanceService<Transaction> {
 	public boolean validateRepresentatives(Representative[] representatives);
 	public long countAccountByCustomer(Transaction transaction);
 	public long countAccountCreditByCustomer(Transaction transaction);
+	public long countAccountCreditCardByCustomer(Transaction transaction);
 }
