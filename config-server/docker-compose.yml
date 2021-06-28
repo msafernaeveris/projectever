@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+    config-server:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: docker-config-server
+        restart: always
+        ports:
+            - 8888:8888
+        volumes:
+            - ./target:/home
+        networks: 
+            bank_network:
+                aliases:
+                    - app_subnet
+                ipv4_address: 172.16.1.3
+
+        environment:
+            SPRING_CLOUD_CONFIG_SERVER_GIT_URI: https://github.com/FernandoChahuaEveris/config-server
+            SPRING_CLOUD_CONFIG_SERVER_GIT_DEFAULT-LABEL: main
+networks: 
+    bank_network:
+        name: app_subnet
+        external: true

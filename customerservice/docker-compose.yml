@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+    customer-service:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: docker-customer-service
+        restart: always
+        ports:
+            - 8084:8084
+        volumes:
+            - ./target:/home
+        networks: 
+            bank_network:
+                aliases:
+                    - app_subnet
+                ipv4_address: 172.16.1.2
+networks: 
+    bank_network:
+        name: app_subnet
+        external: true

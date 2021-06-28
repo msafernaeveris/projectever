@@ -14,5 +14,15 @@ services:
             - 12500:27017
         volumes:
             - ./mongo/:/etc/mongo
+        networks: 
+            bank_network:
+                aliases:
+                    - app_subnet
+                ipv4_address: 172.16.1.5
+networks: 
+    bank_network:
+        name: app_subnet
+        external: true
 volumes:
     mongo: {}
+    

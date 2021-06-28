@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+    eureka-server:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: docker-eureka-server
+        restart: always
+        ports:
+            - 8761:8761
+        volumes:
+            - ./target:/home
+        networks: 
+            bank_network:
+                aliases:
+                    - app_subnet
+                ipv4_address: 172.16.1.4
+networks: 
+    bank_network:
+        name: app_subnet
+        external: true
