@@ -57,6 +57,12 @@ public class TransactionServiceImpl implements ITransactionService {
 	@Value("${msg.error.cuenta.cliente.empresarial.rep}")
 	private String msgErrorCuentaClienteEmpresarialRep;
 	
+	@Value("${msg.error.cuenta.cliente.ahorrovip}")
+	private String msgErrorCuentaVIP;
+	
+	@Value("${msg.error.cuenta.cliente.ahorrovip.tarjeta}")
+	private String msgErrorCuentaVIPtarjeta;
+	
 	@Value("${id.product.cnta.ahorros}")
 	private String idProductCntaAhorros;
 	
@@ -74,6 +80,9 @@ public class TransactionServiceImpl implements ITransactionService {
 	
 	@Value("${id.product.credit.tarjetacredit}")
 	private String idProductCreditTarjetaCredit;
+	
+	@Value("${id.product.credit.ahorrovip}")
+	private String idProductAhorroVIP;
 	
 	@Value("${product.type.pasivo}")
 	private String productTypePasivo;
@@ -134,6 +143,21 @@ public class TransactionServiceImpl implements ITransactionService {
 		transaction.setCustomer(customer);
 		transaction.setProduct(product);
 		System.out.println(" type_customer=> " + customerTypePersonal);
+		
+		if(product.getIdProduct().equalsIgnoreCase(idProductAhorroVIP)) {
+			if(customerIdTypePersonal.equalsIgnoreCase(customer.getTypeCustomer()) || customerTypePersonal.equalsIgnoreCase(customer.getTypeCustomer())) {
+				long countCreditAccounts= this.countAccountCreditByCustomer(transaction);
+				if(countCreditAccounts>=1) {
+					transaction.setRepresentatives(this.getRepresentativesByNumDocRep(transaction.getRepresentatives()));
+					return transactionRep.insert(transaction);
+				}else {
+					throw new Exception(msgErrorCuentaVIPtarjeta);
+				}
+			}else {
+				throw new Exception(msgErrorCuentaVIP);
+			}
+			
+		}
 		if(customerIdTypePersonal.equalsIgnoreCase(customer.getTypeCustomer()) || customerTypePersonal.equalsIgnoreCase(customer.getTypeCustomer())) {//Personal
 			//Un cliente personal solo puede tener un máximo de una de las cuentas bancarias.
 			long  countAccounts= this.countAccountByCustomer(transaction);
@@ -246,6 +270,19 @@ public class TransactionServiceImpl implements ITransactionService {
 				.andOperator(
 						Criteria.where("product.idProduct").is(transaction.getProduct().getIdProduct()),
 						Criteria.where("product.typeProduct").is(productTypePasivo)//Pasivo
+						)
+				);
+		
+		return mongoTemplate.find(query,Transaction.class).count().share().block();
+	}
+	
+	@Override
+	public long countAccountCreditByCustomer(Transaction transaction) {
+		Query query= new Query( 
+				Criteria.where("customer.numDoc").is(transaction.getCustomer().getNumDoc())
+				.andOperator(
+						Criteria.where("product.idProduct").is(transaction.getProduct().getIdProduct()),
+						Criteria.where("product.typeProduct").is(productTypeActivo)//Activo
 						)
 				);
 		
