@@ -1,0 +1,128 @@
+{
+	"info": {
+		"_postman_id": "ad46e811-87cf-4cf8-ac92-17dcd0a477d3",
+		"name": "Gateway",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "List credit",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8091/credit/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8091",
+					"path": [
+						"credit",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List credit by customer",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8091/credit/numDoc/12354678",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8091",
+					"path": [
+						"credit",
+						"numDoc",
+						"12354678"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "new credit",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"numDoc\": \"12354678\",\r\n        \"description\": \"Cuota Mes de Mayo\",\r\n        \"status\": 1,\r\n        \"amountPay\": 1500,\r\n        \"datePay\": \"2021-05-01T00:00:00.000+00:00\",\r\n        \"numTra\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8091/credit/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8091",
+					"path": [
+						"credit",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update credit",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"id\": \"60da393687aa791ef39c942c\",\r\n        \"numDoc\": \"12354678\",\r\n        \"description\": \"Cuota Mes de Agosto\",\r\n        \"status\": 1,\r\n        \"amountPay\": 1500,\r\n        \"datePay\": \"2021-08-01T00:00:00.000+00:00\",\r\n        \"numTra\": 1\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8091/credit/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8091",
+					"path": [
+						"credit",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete credit",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8086/credit/60d114f1574eba29560707ef",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8086",
+					"path": [
+						"credit",
+						"60d114f1574eba29560707ef"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
